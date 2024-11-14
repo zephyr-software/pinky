@@ -29,6 +29,17 @@ class Lexer:
     self.curr = self.curr + 1 # If it is a match, we also consume that char
     return True
 
+  def handle_number(self):
+    while self.peek().isdigit():
+      self.advance()
+    if self.peek() == '.' and self.lookahead().isdigit():
+      self.advance() # consume the '.'
+      while self.peek().isdigit():
+        self.advance()
+      self.add_token(TOK_FLOAT)
+    else:
+      self.add_token(TOK_INTEGER)
+
   def add_token(self, token_type):
     self.tokens.append(Token(token_type, self.source[self.start:self.curr], self.line))
 
@@ -70,4 +81,7 @@ class Lexer:
         self.add_token(TOK_GE if self.match('=') else TOK_GT)
       elif ch == ':':
         self.add_token(TOK_ASSIGN if self.match('=') else TOK_COLON)
+      elif ch.isdigit():
+        self.handle_number()
+      #TODO: handle_string() --> "something" or 'something'
     return self.tokens
