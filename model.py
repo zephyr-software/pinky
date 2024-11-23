@@ -19,7 +19,7 @@ class Integer(Expr):
   Example: 17
   '''
   def __init__(self, value):
-    assert isinsatnce(value, int), value
+    assert isinstance(value, int), value
     self.value = value
   def __repr__(self):
     return f'Integer[{self.value}]'
