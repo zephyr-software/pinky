@@ -46,7 +46,7 @@ class UnOp(Expr):
     self.op = op
     self.operand = operand
   def __repr__(self):
-    return f'BinOp({self.op.lexeme!r}, {self.operand})'
+    return f'UnOp({self.op.lexeme!r}, {self.operand})'
 
 
 class BinOp(Expr):
