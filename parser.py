@@ -76,7 +76,7 @@ class Parser:
     expr = self.unary()
     while self.match(TOK_CARET):
       op = self.previous_token()
-      right = self.unary()
+      right = self.exponent()
       expr = BinOp(op, expr, right, line=op.line)
     return expr
 
