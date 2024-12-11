@@ -141,7 +141,15 @@ class Interpreter:
       for stmt in node.stmts:
         self.interpret(stmt)
 
-
     elif isinstance(node, PrintStmt):
       exprtype, exprval = self.interpret(node.value)
       print(codecs.escape_decode(bytes(str(exprval), "utf-8"))[0].decode("utf-8"), end=node.end)
+
+    elif isinstance(node, IfStmt):
+      testtype, testval = self.interpret(node.test)
+      if testtype != TYPE_BOOL:
+        runtime_error("Condition test is not a boolean expression.", node.line)
+      if testval:
+        self.interpret(node.then_stmts)
+      else:
+        self.interpret(node.else_stmts)
