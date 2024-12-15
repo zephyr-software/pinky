@@ -1,7 +1,7 @@
 println 1 + 2
 
 x := 0
-x := x + 1
+-- x := x + 1
 
 -- Simple if statement test
 if 5 ~= 2 then
