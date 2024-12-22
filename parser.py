@@ -65,8 +65,12 @@ class Parser:
         return Grouping(expr, line=self.previous_token().line)
     else:
       identifier = self.expect(TOK_IDENTIFIER)
-      return Identifier(identifier.lexeme, line=self.previous_token().line)
-      # TODO: we can also have function calls inside expressions. We must handle that as well soon!!!
+      if self.match(TOK_LPAREN):
+        args = self.args()
+        self.expect(TOK_RPAREN)
+        return FuncCall(identifier.lexeme, args, line=self.previous_token().line)
+      else:
+        return Identifier(identifier.lexeme, line=self.previous_token().line)
 
   # <unary>  ::=  ('+'|'-'|'~') <unary>  |  <primary>
   def unary(self):
@@ -198,6 +202,15 @@ class Parser:
     self.expect(TOK_END)
     return ForStmt(identifier, start, end, step, body_stmts, line=self.previous_token().line)
 
+  # <args> ::= <expr> ( ',' <expr> )*
+  def args(self):
+    args = []
+    while not self.is_next(TOK_RPAREN):
+      args.append(self.expr())
+      if not self.is_next(TOK_RPAREN):
+        self.expect(TOK_COMMA)
+    return args
+
   # <params>  ::=  <identifier> ("," <identifier> )*
   def params(self):
     params = []
@@ -235,14 +248,14 @@ class Parser:
     elif self.peek().token_type == TOK_FUNC:
       return self.func_decl()
     else:
-      # Assignment:
       left = self.expr()
       if self.match(TOK_ASSIGN):
+        # Handle assignment
         right = self.expr()
         return Assignment(left, right, line=self.previous_token().line)
       else:
-        # TODO: Handle function call?
-        pass
+        # Handle function call statement (special type of statement that wraps a FuncCall expression)
+        return FuncCallStmt(left)
 
   def stmts(self):
     stmts = []
