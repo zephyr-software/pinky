@@ -221,7 +221,7 @@ class Interpreter:
 
       # Does the number of args match the expected number of params
       if len(node.args) != len(func_decl.params):
-        runtime_error(f'Function {func.name!r} expected {len(func_decl.params)} params but {len(node.args)} args were passed.')
+        runtime_error(f'Function {func_decl.name!r} expected {len(func_decl.params)} params but {len(node.args)} args were passed.', node.line)
 
       # We need to evaluate all the args
       args = []
@@ -233,7 +233,7 @@ class Interpreter:
 
       # We must create local variables in the new child environment of the function for the parameters and bind the argument values to them!
       for param, argval in zip(func_decl.params, args):
-        new_func_env.set_var(param, argval)
+        new_func_env.set_var(param.name, argval)
 
       # Finally, we ask to interpret the body_stmts of the function declaration
       self.interpret(func_decl.body_stmts, new_func_env)

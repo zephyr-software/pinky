@@ -30,12 +30,22 @@ class Environment:
     original_env.vars[name] = value
 
   def get_func(self, name):
-    #TODO:
-    pass
+    '''
+    Searches the current environment and all parent environments for a function name (returns None if it does not find any)
+    '''
+    while self:
+      value = self.funcs.get(name)
+      if value is not None:
+        return value
+      else:
+        self = self.parent # Look in parent environments to see if the function is defined "above"
+    return None
 
   def set_func(self, name, value):
-    #TODO
-    pass
+    '''
+    Declares a function (also stores the environment in which it was declared)
+    '''
+    self.funcs[name] = value
 
   def new_env(self):
     '''
