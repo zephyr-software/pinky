@@ -214,8 +214,12 @@ class Parser:
   # <params>  ::=  <identifier> ("," <identifier> )*
   def params(self):
     params = []
+    numparams = 0
     while not self.is_next(TOK_RPAREN):
       name = self.expect(TOK_IDENTIFIER)
+      numparams += 1
+      if numparams > 255:
+        parse_error(f'Functions cannot have more than 255 parameters.', name.line)
       params.append(Param(name.lexeme, line=self.previous_token().line))
       if not self.is_next(TOK_RPAREN):
         self.expect(TOK_COMMA)
