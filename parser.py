@@ -236,6 +236,14 @@ class Parser:
     self.expect(TOK_END)
     return FuncDecl(name.lexeme, params, body_stmts, line=self.previous_token().line)
 
+  # <local_assign>  ::=  "local" <assign>
+  def local_assign(self):
+    self.expect(TOK_LOCAL)
+    left = self.expr()
+    self.expect(TOK_ASSIGN)
+    right = self.expr()
+    return LocalAssignment(left, right, line=self.previous_token().line)
+
   # <ret_stmt>  ::=  "ret" <expr>
   def ret_stmt(self):
     self.expect(TOK_RET)
@@ -244,6 +252,8 @@ class Parser:
 
   # <stmt> ::=  print_stmt
   #          |  if_stmt
+  #          |  assign
+  #          |  local_assign
   #          |  while_stmt
   #          |  for_stmt
   #          |  func_decl
@@ -266,6 +276,8 @@ class Parser:
       return self.func_decl()
     elif self.peek().token_type == TOK_RET:
       return self.ret_stmt()
+    elif self.peek().token_type == TOK_LOCAL:
+      return self.local_assign()
     else:
       left = self.expr()
       if self.match(TOK_ASSIGN):
