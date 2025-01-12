@@ -104,7 +104,8 @@ class VM:
     lefttype, leftval = self.POP()
     if lefttype == TYPE_NUMBER and righttype == TYPE_NUMBER:
       self.PUSH((TYPE_NUMBER, leftval + rightval))
-      #TODO: think of string concatenation
+    if lefttype == TYPE_STRING or righttype == TYPE_STRING:
+      self.PUSH((TYPE_STRING, stringify(leftval) + stringify(rightval)))
     else:
       vm_error(f'Error on ADD between {lefttype} and {righttype}.', self.pc - 1)
 
@@ -230,6 +231,8 @@ class VM:
     lefttype, leftval = self.POP()
     if lefttype == TYPE_NUMBER and righttype == TYPE_NUMBER:
       self.PUSH((TYPE_BOOL, leftval == rightval))
+    elif lefttype == TYPE_BOOL and righttype == TYPE_BOOL:
+      self.PUSH((TYPE_BOOL, leftval == rightval))
     elif lefttype == TYPE_STRING and righttype == TYPE_STRING:
       self.PUSH((TYPE_BOOL, leftval == rightval))
     else:
@@ -239,6 +242,8 @@ class VM:
     righttype, rightval = self.POP()
     lefttype, leftval = self.POP()
     if lefttype == TYPE_NUMBER and righttype == TYPE_NUMBER:
+      self.PUSH((TYPE_BOOL, leftval != rightval))
+    elif lefttype == TYPE_BOOL and righttype == TYPE_BOOL:
       self.PUSH((TYPE_BOOL, leftval != rightval))
     elif lefttype == TYPE_STRING and righttype == TYPE_STRING:
       self.PUSH((TYPE_BOOL, leftval != rightval))
