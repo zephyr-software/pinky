@@ -64,6 +64,7 @@ class VM:
   def __init__(self):
     self.stack = []
     self.labels = {}
+    self.globals = {}
     self.pc = 0
     self.sp = 0
     self.is_running = False
@@ -104,7 +105,7 @@ class VM:
     lefttype, leftval = self.POP()
     if lefttype == TYPE_NUMBER and righttype == TYPE_NUMBER:
       self.PUSH((TYPE_NUMBER, leftval + rightval))
-    if lefttype == TYPE_STRING or righttype == TYPE_STRING:
+    elif lefttype == TYPE_STRING or righttype == TYPE_STRING:
       self.PUSH((TYPE_STRING, stringify(leftval) + stringify(rightval)))
     else:
       vm_error(f'Error on ADD between {lefttype} and {righttype}.', self.pc - 1)
@@ -268,6 +269,12 @@ class VM:
     valtype, val = self.POP()
     if val == 0 or val == False:
       self.pc = self.labels[label]
+
+  def STORE_GLOBAL(self, name):
+    self.globals[name] = self.POP()
+
+  def LOAD_GLOBAL(self, name):
+    self.PUSH(self.globals[name])
 
   def HALT(self):
     self.is_running = False
