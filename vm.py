@@ -82,7 +82,7 @@ class VM:
       opcode, *args = instruction
       if opcode == 'LABEL':
         self.labels.update({args[0]: pc})
-        print("GENERATED LABEL:", args[0], pc)
+#        print("GENERATED LABEL:", args[0], pc)
       pc += 1
 
   def run(self, instructions):
