@@ -3,16 +3,21 @@ from model import *
 from tokens import *
 from utils import *
 
+SYM_VAR  = 'SYM_VAR'
+SYM_FUNC = 'SYM_FUNC'
+
 class Symbol:
-  def __init__(self, name, depth=0):
+  def __init__(self, name, symtype=SYM_VAR, depth=0):
     self.name = name
     self.depth = depth
+    self.symtype = symtype
 
 class Compiler:
   def __init__(self):
     self.code = []
     self.locals = []
     self.globals = []
+    self.functions = []
     self.scope_depth = 0
     self.label_counter = 0
 
@@ -157,7 +162,7 @@ class Compiler:
       self.compile(node.right)
       symbol = self.get_symbol(node.left.name)
       if not symbol:
-        new_symbol = Symbol(node.left.name, self.scope_depth)
+        new_symbol = Symbol(node.left.name, symtype=SYM_VAR, depth=self.scope_depth)
         if self.scope_depth == 0:
           self.globals.append(new_symbol)
           new_global_slot = len(self.globals) - 1
@@ -182,6 +187,18 @@ class Compiler:
           self.emit(('LOAD_GLOBAL', slot))
         else:
           self.emit(('LOAD_LOCAL', slot))
+
+    elif isinstance(node, FuncDecl):
+      #TODO
+      pass
+
+    elif isinstance(node, FuncCall):
+      #TODO:
+      pass
+
+    elif isinstance(node, FuncCallStmt):
+      #TODO:
+      pass
 
   def print_code(self):
     i = 0
