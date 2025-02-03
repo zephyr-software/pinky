@@ -214,12 +214,10 @@ class Compiler:
       self.emit(('LABEL', end_label))
 
     elif isinstance(node, FuncCall):
-      #TODO: JSR to the function (also activate our "frame" for this call)
-      pass
+      self.emit(('JSR', node.name))
 
     elif isinstance(node, FuncCallStmt):
-      #TODO:
-      pass
+      self.compile(node.expr)
 
   def print_code(self):
     i = 0
